@@ -2,11 +2,13 @@
 define([
         '../../Core/buildModuleUrl',
         '../../Core/CesiumTerrainProvider',
+        '../../Core/MapzenTerrariumTerrainProvider',
         '../../Core/EllipsoidTerrainProvider',
         '../BaseLayerPicker/ProviderViewModel'
     ], function(
         buildModuleUrl,
         CesiumTerrainProvider,
+        MapzenTerrariumTerrainProvider,
         EllipsoidTerrainProvider,
         ProviderViewModel) {
     'use strict';
@@ -33,6 +35,19 @@ define([
             creationFunction : function() {
                 return new CesiumTerrainProvider({
                     url : 'https://assets.agi.com/stk-terrain/world',
+                    requestWaterMask : true,
+                    requestVertexNormals : true
+                });
+            }
+        }));
+
+        providerViewModels.push(new ProviderViewModel({
+            name : 'Mapzen Terrarium S3',
+            iconUrl : buildModuleUrl('Widgets/Images/TerrainProviders/STK.png'),
+            tooltip : 'Terrain tiles on AWS by Mapzen: https://aws.amazon.com/public-datasets/terrain/',
+            creationFunction : function() {
+                return new MapzenTerrariumTerrainProvider({
+                    url : 'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/',
                     requestWaterMask : true,
                     requestVertexNormals : true
                 });
