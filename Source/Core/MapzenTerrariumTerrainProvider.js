@@ -69,7 +69,7 @@ define([
         if (!defined(this._tilingScheme)) {
             /*this._tilingScheme = new GeographicTilingScheme({
                 ellipsoid : defaultValue(options.ellipsoid, Ellipsoid.WGS84)
-            });*/
+            });*/ 
             this._tilingScheme = new WebMercatorTilingScheme({
                 numberOfLevelZeroTilesX:1,
                 numberOfLevelZeroTilesY:1,
@@ -77,7 +77,7 @@ define([
             });
         }
 
-        this._heightmapWidth = 256;
+        this._heightmapWidth = 64;
         this._levelZeroMaximumGeometricError = TerrainProvider.getEstimatedLevelZeroGeometricErrorForAHeightmap(this._tilingScheme.ellipsoid, this._heightmapWidth, this._tilingScheme.getNumberOfXTilesAtLevel(0));
 
         this._proxy = options.proxy;
@@ -219,10 +219,10 @@ define([
         var that = this;
         return when(promise, function(image) {
             return new HeightmapTerrainData({
-                buffer : getImagePixels(image),
+                buffer : getImagePixels(image, that._heightmapWidth, that._heightmapWidth),
                 width : that._heightmapWidth,
                 height : that._heightmapWidth,
-                childTileMask : 15, // all children present
+                childTileMask : level < 16 ? 0 : 15,
                 structure : that._terrainDataStructure
             });
         });
@@ -247,7 +247,7 @@ define([
      * @returns {Boolean} Undefined if not supported, otherwise true or false.
      */
     MapzenTerrariumTerrainProvider.prototype.getTileDataAvailable = function(x, y, level) {
-        return true;
+        return level < 16 ? true : undefined;
     };
 
     return MapzenTerrariumTerrainProvider;
